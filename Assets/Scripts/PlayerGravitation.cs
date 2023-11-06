@@ -45,7 +45,7 @@ public class Gravitation : MonoBehaviour
         asteroid = GameObject.FindGameObjectWithTag("Asteroid");
         EHThrustGC = GameObject.FindGameObjectWithTag("EHThrust");
         EHBoostGC = GameObject.FindGameObjectWithTag("EHBoost");
-        crushZoneGC = GameObject.Find
+        crushZoneGC = GameObject.FindGameObjectWithTag("CrushZone");
         EHThrust = EHThrustGC.GetComponent<CircleCollider2D>();
         EHBoost = EHBoostGC.GetComponent<CircleCollider2D>();
         move = GetComponent<Move>();
