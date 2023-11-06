@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -33,6 +34,10 @@ public class Gravitation : MonoBehaviour
     public float pressureResistance;
     int crystals;
     public TextMeshProUGUI coreArrow;
+    public Slider proximityBar;
+    public Slider proximityBarEH;
+    public Slider proximityBarCrush;
+    public float proximityStartAddend;
 
     private void OnDrawGizmos()
     {
@@ -69,6 +74,15 @@ public class Gravitation : MonoBehaviour
         //bRadius = Mathf.Sqrt((coreMass) / (((0.01f * move.thrusterForce * move.thrusterForceBoostFactor)/mass) * 0.09f));
         tRadius = Mathf.Sqrt((0.09f * coreMass * mass) / ((0.001f * move.thrusterForce)*mass));
         bRadius = Mathf.Sqrt((0.09f * coreMass * mass) / ((0.001f * move.thrusterForce * move.thrusterForceBoostFactor)*mass));
+        proximityBar.maxValue = tRadius + proximityStartAddend;
+        proximityBarEH.maxValue = tRadius + proximityStartAddend;
+        proximityBarCrush.maxValue = tRadius + proximityStartAddend;
+        proximityBar.minValue = bRadius;
+        proximityBarEH.minValue = bRadius;
+        proximityBarCrush.minValue = bRadius;
+        proximityBar.value = tRadius + proximityStartAddend;
+        proximityBarEH.value = tRadius;
+        proximityBarCrush.value = (bRadius + bRadius + tRadius)/3;
         EHThrust.radius = tRadius;
         EHBoost.radius = bRadius;
         crushZone.radius = (bRadius + bRadius + tRadius)/3;
@@ -97,10 +111,29 @@ public class Gravitation : MonoBehaviour
             body.AddForce(targetDirection * force);
         }
 
-        if (distance < tRadius)
+        if (distance < tRadius + proximityStartAddend)
         {
-
+            if (distance < tRadius)
+            {
+                if (distance < (bRadius + bRadius + tRadius) / 3)
+                {
+                    proximityBar.value = distance;
+                    proximityBarEH.value = distance;
+                    proximityBarCrush.value = distance;
+                }
+                else
+                {
+                    proximityBar.value = distance;
+                    proximityBarEH.value = distance;
+                }          
+            }
+            else
+            {
+                proximityBar.value = distance;
+            }
         }
+        
+        
     }
 
 }
