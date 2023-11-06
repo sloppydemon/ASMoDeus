@@ -16,3 +16,5 @@ Hold SHIFT to boost thrusters. (For the moment needed just to get off the launch
 
 At the moment the only way to die (and leave the level) is to run out of fuel so if you get stuck to the core you can do that,
 but of course it doesn't really give you anything besides letting you start over.
+
+EDIT 2023-11-06 14:23: There are escape zones now! So if you get out of the asteroid maze you'll get a nice (or really strangely pitched - sorry about that) fanfare.
