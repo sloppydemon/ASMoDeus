@@ -25849,7 +25849,7 @@ GameObject:
   - component: {fileID: 703253100}
   - component: {fileID: 703253099}
   m_Layer: 5
-  m_Name: TxtFuel
+  m_Name: TxtCrush
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48219,7 +48219,7 @@ GameObject:
   - component: {fileID: 2084431322}
   - component: {fileID: 2084431321}
   m_Layer: 5
-  m_Name: TxtFuel
+  m_Name: TxtHP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48264,7 +48264,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Crush Resistance
+  m_text: 'Shields
 
 '
   m_isRightToLeft: 0
@@ -89320,8 +89320,8 @@ SceneRoots:
   - {fileID: 94681827}
   - {fileID: 1098542648}
   - {fileID: 1748780402478030911}
-  - {fileID: 1220952720}
   - {fileID: 1132161500}
   - {fileID: 901568427}
   - {fileID: 1528103763}
   - {fileID: 193922690}
+  - {fileID: 1220952720}
