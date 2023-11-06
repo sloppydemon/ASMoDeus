@@ -9,6 +9,9 @@ TagManager:
   - ThrusterL
   - ThrusterR
   - ThrusterBrake
+  - EHThrust
+  - EHBoost
+  - CrushZone
   layers:
   - Default
   - TransparentFX

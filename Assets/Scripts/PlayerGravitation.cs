@@ -14,6 +14,12 @@ public class Gravitation : MonoBehaviour
     Vector2 wellPos;
     Vector2 targetDirection;
     GameObject asteroid;
+    GameObject EHThrustGC;
+    GameObject EHBoostGC;
+    GameObject crushZoneGC;
+    CircleCollider2D EHThrust;
+    CircleCollider2D EHBoost;
+    CircleCollider2D crushZone;
     Rigidbody2D asteroidBody;
     float coreMass;
     float force;
@@ -37,6 +43,11 @@ public class Gravitation : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         asteroid = GameObject.FindGameObjectWithTag("Asteroid");
+        EHThrustGC = GameObject.FindGameObjectWithTag("EHThrust");
+        EHBoostGC = GameObject.FindGameObjectWithTag("EHBoost");
+        crushZoneGC = GameObject.Find
+        EHThrust = EHThrustGC.GetComponent<CircleCollider2D>();
+        EHBoost = EHBoostGC.GetComponent<CircleCollider2D>();
         move = GetComponent<Move>();
         asteroidBody = asteroid.GetComponent<Rigidbody2D>();
         wellPos = asteroidBody.position;
@@ -48,6 +59,8 @@ public class Gravitation : MonoBehaviour
         //bRadius = Mathf.Sqrt((coreMass) / (((0.01f * move.thrusterForce * move.thrusterForceBoostFactor)/mass) * 0.09f));
         tRadius = Mathf.Sqrt((0.09f * coreMass * mass) / ((0.001f * move.thrusterForce)*mass));
         bRadius = Mathf.Sqrt((0.09f * coreMass * mass) / ((0.001f * move.thrusterForce * move.thrusterForceBoostFactor)*mass));
+        EHThrust.radius = tRadius;
+        EHBoost.radius = bRadius;
     }
 
     // Update is called once per frame
@@ -61,6 +74,11 @@ public class Gravitation : MonoBehaviour
         if (distance > 0f)
         {
             body.AddForce(targetDirection * force);
+        }
+
+        if (distance < tRadius)
+        {
+
         }
     }
 
