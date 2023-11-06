@@ -94,10 +94,19 @@ public class Gravitation : MonoBehaviour
     {
         if (collision.gameObject.tag == "Asteroid")
         {
-            shipSnd.pitch = 1 - collision.rigidbody.velocity.magnitude;
+            shipSnd.pitch = 1 / body.velocity.magnitude;
             shipSnd.PlayOneShot(clang, body.velocity.magnitude/5);
             //shipSnd.Play();
         }
+
+        if (collision.gameObject.tag == "Terrain")
+        {
+            shipSnd.pitch = 1 / body.velocity.magnitude;
+            shipSnd.PlayOneShot(clang, body.velocity.magnitude / 5);
+            //shipSnd.Play();
+        }
+
+
 
         if (collision.gameObject.tag == "Crystal")
         {
