@@ -13,6 +13,7 @@ TagManager:
   - EHBoost
   - CrushZone
   - Terrain
+  - Crystal
   layers:
   - Default
   - TransparentFX

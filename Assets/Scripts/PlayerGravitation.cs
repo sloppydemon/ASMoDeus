@@ -30,9 +30,11 @@ public class Gravitation : MonoBehaviour
     float tRadius;
     AudioSource shipSnd;
     public AudioClip clang;
+    public AudioClip crystal;
     public float hitPoints;
     public float pressureResistance;
     int crystals;
+    public TextMeshProUGUI crystalsNumber;
     public TextMeshProUGUI coreArrow;
     public Slider proximityBar;
     public Slider proximityBarEH;
@@ -95,6 +97,15 @@ public class Gravitation : MonoBehaviour
             shipSnd.pitch = 1 - collision.rigidbody.velocity.magnitude;
             shipSnd.PlayOneShot(clang, body.velocity.magnitude/5);
             //shipSnd.Play();
+        }
+
+        if (collision.gameObject.tag == "Crystal")
+        {
+            shipSnd.pitch = 1;
+            shipSnd.PlayOneShot(crystal, 1);
+            crystals += 1;
+            Destroy(collision.gameObject);
+            crystalsNumber.text = new string($"{crystals}");
         }
 
     }
