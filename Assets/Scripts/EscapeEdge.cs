@@ -28,14 +28,17 @@ public class EscapeEdge : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            shipSnd = collision.gameObject.GetComponent<AudioSource>();
-            shipSnd.PlayOneShot(fanfare);
-            grav = collision.gameObject.GetComponent<Gravitation>();
-            move = collision.gameObject.GetComponent<Move>();
-            cam = collision.gameObject.GetComponent<Camera>();
-            move.win = true;
-            crystalsNum = grav.crystals;
-            alertText.text = new string($"You escaped with {crystalsNum} crystals!");
+            if (move.dead == false)
+            {
+                shipSnd = collision.gameObject.GetComponent<AudioSource>();
+                shipSnd.PlayOneShot(fanfare);
+                grav = collision.gameObject.GetComponent<Gravitation>();
+                move = collision.gameObject.GetComponent<Move>();
+                cam = collision.gameObject.GetComponent<Camera>();
+                move.win = true;
+                crystalsNum = grav.crystals;
+                alertText.text = new string($"You escaped with {crystalsNum} crystals!");
+            }
         }
     }
     // Update is called once per frame

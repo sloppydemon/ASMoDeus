@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics.Contracts;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -29,17 +30,35 @@ public class Gravitation : MonoBehaviour
     float bRadius;
     float tRadius;
     AudioSource shipSnd;
+    public AudioSource klaxonEH;
+    public AudioSource klaxonCrush;
     public AudioClip clang;
     public AudioClip crystal;
+    public float initialHitPoints;
     public float hitPoints;
-    public float pressureResistance;
+    public float initialCrushResistance;
+    public float crushResistance;
     public int crystals;
     public TextMeshProUGUI crystalsNumber;
     public TextMeshProUGUI coreArrow;
+    public TextMeshProUGUI alertText;
+    public string damageDeathText;
+    public TextMeshProUGUI EHAlertText;
+    public TextMeshProUGUI crushAlertText;
     public Slider proximityBar;
     public Slider proximityBarEH;
     public Slider proximityBarCrush;
+    public Slider crushResistanceBar;
+    public Slider hitPointsBar;
+    public Image hitPointsFill;
+    public Color hitPointsFull;
+    public Color hitPointsEmpty;
     public float proximityStartAddend;
+    public AudioClip explosionSound;
+    GameObject[] destroyObjects;
+    GameObject explosionGO;
+    ParticleSystem explosion;
+    public AudioSource hullSound;
 
     private void OnDrawGizmos()
     {
@@ -71,6 +90,8 @@ public class Gravitation : MonoBehaviour
         well = asteroid.GetComponent<CoreMass>();
         coreMass = well.mass;
         mass = body.mass;
+        hitPoints = initialHitPoints;
+        crushResistance = initialCrushResistance;
         //bRadius = (0.09f * coreMass) / ((0.01f * move.thrusterForce * move.thrusterForceBoostFactor * body.mass) * (0.01f * move.thrusterForce * move.thrusterForceBoostFactor));
         //tRadius = Mathf.Sqrt((coreMass) / (((0.01f * move.thrusterForce)/mass) * 0.09f));
         //bRadius = Mathf.Sqrt((coreMass) / (((0.01f * move.thrusterForce * move.thrusterForceBoostFactor)/mass) * 0.09f));
@@ -84,10 +105,18 @@ public class Gravitation : MonoBehaviour
         proximityBarCrush.minValue = bRadius;
         proximityBar.value = tRadius + proximityStartAddend;
         proximityBarEH.value = tRadius;
-        proximityBarCrush.value = (bRadius + bRadius + tRadius)/3;
+        proximityBarCrush.value = (bRadius + bRadius + tRadius) / 3;
+        crushResistanceBar.maxValue = initialCrushResistance;
+        crushResistanceBar.minValue = 0f;
+        hitPointsBar.maxValue = initialHitPoints;
+        hitPointsBar.minValue = 0f;
         EHThrust.radius = tRadius;
         EHBoost.radius = bRadius;
         crushZone.radius = (bRadius + bRadius + tRadius)/3;
+        hitPointsBar.value = hitPoints;
+        crushResistanceBar.value = crushResistance;
+        explosionGO = GameObject.FindGameObjectWithTag("Explosion");
+        explosion = explosionGO.GetComponent<ParticleSystem>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -96,6 +125,10 @@ public class Gravitation : MonoBehaviour
         {
             shipSnd.pitch = 1 / body.velocity.magnitude;
             shipSnd.PlayOneShot(clang, body.velocity.magnitude/5);
+            hitPoints -= 2 * body.velocity.magnitude;
+            hitPointsBar.value = hitPoints;
+            hitPointsFill.color = Color.Lerp(hitPointsEmpty, hitPointsFull, hitPoints / initialHitPoints);
+            hullSound.pitch = 1 / body.velocity.magnitude;
             //shipSnd.Play();
         }
 
@@ -103,10 +136,12 @@ public class Gravitation : MonoBehaviour
         {
             shipSnd.pitch = 1 / body.velocity.magnitude;
             shipSnd.PlayOneShot(clang, body.velocity.magnitude / 5);
+            hitPoints -= 1 * body.velocity.magnitude;
+            hitPointsBar.value = hitPoints;
+            hitPointsFill.color = Color.Lerp(hitPointsEmpty, hitPointsFull, hitPoints / initialHitPoints);
+            hullSound.pitch = 1 / body.velocity.magnitude;
             //shipSnd.Play();
         }
-
-
 
         if (collision.gameObject.tag == "Crystal")
         {
@@ -115,6 +150,26 @@ public class Gravitation : MonoBehaviour
             crystals += 1;
             Destroy(collision.gameObject);
             crystalsNumber.text = new string($"{crystals}");
+        }
+
+        if (hitPoints <= 0f)
+        {
+            klaxonCrush.Stop();
+            klaxonEH.Stop();
+            klaxonCrush.enabled = false;
+            klaxonEH.enabled = false;
+            EHAlertText.enabled = false;
+            crushAlertText.enabled = false;
+            alertText.text = damageDeathText;
+            move.dead = true;
+            destroyObjects = GameObject.FindGameObjectsWithTag("Hull");
+            foreach (GameObject desObj in destroyObjects)
+            {
+                Destroy(desObj);
+            }
+            Destroy(body);
+            explosion.Emit(40);
+            shipSnd.PlayOneShot(explosionSound, 1);
         }
 
     }

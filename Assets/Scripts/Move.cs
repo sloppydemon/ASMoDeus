@@ -54,7 +54,7 @@ public class Move : MonoBehaviour
     public AudioSource klaxonThrust;
     public TextMeshProUGUI alertTextObject;
     public string outOfFuelText;
-    bool dead;
+    public bool dead;
     GameObject camGO;
     Camera cam;
     public bool win;

@@ -15,6 +15,9 @@ TagManager:
   - Terrain
   - Crystal
   - EscapeEdge
+  - HullSound
+  - Hull
+  - Explosion
   layers:
   - Default
   - TransparentFX
