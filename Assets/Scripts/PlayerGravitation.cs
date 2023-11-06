@@ -33,7 +33,7 @@ public class Gravitation : MonoBehaviour
     public AudioClip crystal;
     public float hitPoints;
     public float pressureResistance;
-    int crystals;
+    public int crystals;
     public TextMeshProUGUI crystalsNumber;
     public TextMeshProUGUI coreArrow;
     public Slider proximityBar;
