@@ -13,12 +13,11 @@ public class EscapeEdge : MonoBehaviour
     Move move;
     Gravitation grav;
     int crystalsNum;
-    bool win;
     Camera cam;
     // Start is called before the first frame update
     void Start()
     {
-        win = false;
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -30,23 +29,15 @@ public class EscapeEdge : MonoBehaviour
             grav = collision.gameObject.GetComponent<Gravitation>();
             move = collision.gameObject.GetComponent<Move>();
             cam = collision.gameObject.GetComponent<Camera>();
-            move.enabled = false;
+            //move.enabled = false;
+            move.win = true;
             crystalsNum = grav.crystals;
             alertText.text = new string($"You escaped with {crystalsNum} crystals!");
-            win = true;
         }
     }
     // Update is called once per frame
     void Update()
     {
-        if (win == true)
-        {
-            cam.transform.position += new Vector3(0, 0, -0.01f);
 
-            if (Input.anyKeyDown)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-            }
-        }
     }
 }

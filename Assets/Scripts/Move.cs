@@ -57,6 +57,7 @@ public class Move : MonoBehaviour
     bool dead;
     GameObject camGO;
     Camera cam;
+    public bool win;
 
     private void OnDrawGizmos()
     {
@@ -103,6 +104,7 @@ public class Move : MonoBehaviour
         thrustRSE.rate = 0;
 
         dead = false;
+        win = false;
     }
 
     // Update is called once per frame
@@ -351,6 +353,14 @@ public class Move : MonoBehaviour
         else if (dead == true)
         {
             cam.transform.position += new Vector3(0,0,-0.01f);
+            if (Input.anyKeyDown)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+            }
+        }
+        else if (win == true)
+        {
+            cam.transform.position += new Vector3(0, 0, -0.01f);
             if (Input.anyKeyDown)
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
