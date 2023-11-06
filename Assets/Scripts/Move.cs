@@ -126,7 +126,15 @@ public class Move : MonoBehaviour
 
         if (dead == false )
         {
-            if (fuel >= 0)
+            if (win == true)
+            {
+                cam.transform.position += new Vector3(0, 0, -0.01f);
+                if (Input.anyKeyDown)
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+                }
+            }
+            else if (fuel >= 0)
             {
                 if (Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift))
                 {
@@ -358,13 +366,6 @@ public class Move : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
             }
         }
-        else if (win == true)
-        {
-            cam.transform.position += new Vector3(0, 0, -0.01f);
-            if (Input.anyKeyDown)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-            }
-        }
+        
     }
 }
