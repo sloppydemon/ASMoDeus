@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gravitation : MonoBehaviour
 {
@@ -25,6 +27,12 @@ public class Gravitation : MonoBehaviour
     float force;
     float bRadius;
     float tRadius;
+    AudioSource shipSnd;
+    public AudioClip clang;
+    public float hitPoints;
+    public float pressureResistance;
+    int crystals;
+    public TextMeshProUGUI coreArrow;
 
     private void OnDrawGizmos()
     {
@@ -42,12 +50,14 @@ public class Gravitation : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        shipSnd = GetComponent<AudioSource>();
         asteroid = GameObject.FindGameObjectWithTag("Asteroid");
         EHThrustGC = GameObject.FindGameObjectWithTag("EHThrust");
         EHBoostGC = GameObject.FindGameObjectWithTag("EHBoost");
         crushZoneGC = GameObject.FindGameObjectWithTag("CrushZone");
         EHThrust = EHThrustGC.GetComponent<CircleCollider2D>();
         EHBoost = EHBoostGC.GetComponent<CircleCollider2D>();
+        crushZone = crushZoneGC.GetComponent<CircleCollider2D>();
         move = GetComponent<Move>();
         asteroidBody = asteroid.GetComponent<Rigidbody2D>();
         wellPos = asteroidBody.position;
@@ -61,8 +71,19 @@ public class Gravitation : MonoBehaviour
         bRadius = Mathf.Sqrt((0.09f * coreMass * mass) / ((0.001f * move.thrusterForce * move.thrusterForceBoostFactor)*mass));
         EHThrust.radius = tRadius;
         EHBoost.radius = bRadius;
+        crushZone.radius = (bRadius + bRadius + tRadius)/3;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Asteroid")
+        {
+            shipSnd.pitch = 1 - collision.rigidbody.velocity.magnitude;
+            shipSnd.PlayOneShot(clang, body.velocity.magnitude/5);
+            //shipSnd.Play();
+        }
+
+    }
     // Update is called once per frame
     void Update()
     {

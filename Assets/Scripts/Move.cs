@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.ParticleSystem;
 
@@ -28,6 +29,16 @@ public class Move : MonoBehaviour
     float thrust;
     float thrustT;
     float particleRate;
+    public float maxFuel;
+    public float fuel;
+    public float fuelUsePerThrust;
+    float fuelUse;
+    AudioSource thrustSndMain;
+    AudioSource thrustSndL;
+    AudioSource thrustSndR;
+    public AudioClip thrustSndBoost;
+    public AudioClip thrustSnd;
+    public Slider fuelBar;
 
     private void OnDrawGizmos()
     {
@@ -42,6 +53,9 @@ public class Move : MonoBehaviour
         thruster = GameObject.FindGameObjectWithTag("ThrusterMain");
         turnThrusterL = GameObject.FindGameObjectWithTag("ThrusterL");
         turnThrusterR = GameObject.FindGameObjectWithTag("ThrusterR");
+        thrustSndMain = thruster.GetComponent<AudioSource>();
+        thrustSndL = turnThrusterL.GetComponent<AudioSource>();
+        thrustSndR = turnThrusterR.GetComponent<AudioSource>();
         thrustP = thruster.GetComponent<ParticleSystem>();
         thrustPL = turnThrusterL.GetComponent<ParticleSystem>();
         thrustPR = turnThrusterR.GetComponent<ParticleSystem>();
@@ -51,7 +65,10 @@ public class Move : MonoBehaviour
         thrustE.enabled = true;
         thrustLE.enabled = true;
         thrustRE.enabled = true;
-        
+        fuel = maxFuel;
+        fuelBar.maxValue = maxFuel;
+        fuelBar.value = fuel;
+
         thrustE.rate = 0;
         thrustLE.rate = 0;
         thrustRE.rate = 0;
@@ -82,6 +99,13 @@ public class Move : MonoBehaviour
             thrustSLMax = 0.02f + (0.02f * thrusterForceBoostFactor);
             thrustSRMin = 0.01f + (0.01f * thrusterForceBoostFactor);
             thrustSRMax = 0.02f + (0.02f * thrusterForceBoostFactor);
+            fuelUse = fuelUsePerThrust * thrusterForceBoostFactor;
+            //thrustSndMain.clip = thrustSndBoost;
+            thrustSndMain.volume = 0.75f;
+            //thrustSndL.clip = thrustSndBoost;
+            thrustSndL.volume = 0.5f;
+            //thrustSndR.clip = thrustSndBoost;
+            thrustSndR.volume = 0.5f;
         }
         else
         {
@@ -94,39 +118,52 @@ public class Move : MonoBehaviour
             thrustSLMax = 0.02f;
             thrustSRMin = 0.01f;
             thrustSRMax = 0.02f;
+            fuelUse = fuelUsePerThrust;
+            //thrustSndMain.clip = thrustSnd;
+            thrustSndMain.volume = 0.5f;
+            //thrustSndL.clip = thrustSnd;
+            thrustSndL.volume = 0.25f;
+            //thrustSndR.clip = thrustSnd;
+            thrustSndR.volume = 0.25f;
         }
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
             body.AddForce(body.transform.up * thrust);
+            fuel -= fuelUse;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
             if (body.velocity.magnitude > 0f)
             {
                 body.AddForce(body.velocity * -thrust * brakeThrusterForce);
+                fuel -= fuelUse;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             thrustE.rate = particleRate;
+            thrustSndMain.Play();
 
         }
 
         if (Input.GetKeyUp(KeyCode.UpArrow))
         {
             thrustE.rate = 0;
+            thrustSndMain.Stop();
         }
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             body.AddForceAtPosition(body.transform.right * (-1 * thrustT), turnThrusterL.transform.position);
+            fuel -= fuelUse * thrustManeuverFactor;
             //body.AddTorque(1f * thrust);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
             body.AddForceAtPosition(body.transform.right * thrustT, turnThrusterR.transform.position);
+            fuel -= fuelUse * thrustManeuverFactor;
             //body.AddTorque(-1f * thrust);
         }
         else
@@ -151,12 +188,14 @@ public class Move : MonoBehaviour
         {
             turning = true;
             thrustLE.rate = particleRate;
+            thrustSndL.Play();
         }
         else if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
             turning = false;
             thrustLE.rate = 0;
             thrustPR.Emit(50);
+            thrustSndL.Stop();
             //body.AddTorque(-1f * sumTorque);
             //body.AddForceAtPosition(body.transform.right * (0.1f * body.angularVelocity), turnThrusterR.transform.position);
         }
@@ -164,14 +203,18 @@ public class Move : MonoBehaviour
         {
             turning = true;
             thrustRE.rate = particleRate;
+            thrustSndR.Play();
         }
         else if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             turning = false;
             thrustRE.rate = 0;
             thrustPL.Emit(50);
+            thrustSndR.Stop();
             //body.AddTorque(-1f * sumTorque);
             //body.AddForceAtPosition(body.transform.right * (-0.1f * body.angularVelocity), turnThrusterL.transform.position);
         }
+
+        fuelBar.value = fuel;
     }
 }

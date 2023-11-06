@@ -12,6 +12,7 @@ TagManager:
   - EHThrust
   - EHBoost
   - CrushZone
+  - Terrain
   layers:
   - Default
   - TransparentFX
